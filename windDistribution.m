@@ -75,9 +75,15 @@ for i=1:length(dirID)
     spdDir{i}=[spd(idx),dir(idx)]; %data are not enough for some directions
 end
 
+spdDir30=cell(12,1);
+dirID30=0:30:330;
+for i=1:length(dirID30)
+    idx=find(dir==dirID30(i)|dir==dirID30(i)-10|dir==dirID30(i)+10|dir==dirID30(i)-10+360);
+    spdDir30{i}=[spd(idx),dir(idx)];
+end
 %% fit distribution for wind speeds in each 10 deg
-for i=1:length(dirID)
-    pdfFit(spdDir{i}(:,1),spdDir{i}(1,2),State)
+for i=1:length(dirID30)
+    pdfFit(spdDir30{i}(:,1),unique(spdDir30{i}(:,2)),State)
 end
 end
 
@@ -103,6 +109,6 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\Figures\',State,num2str(dir),'.');
+fileout=strcat('.\FiguresDeg30\',State,num2str(dir(2)),'.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 end
