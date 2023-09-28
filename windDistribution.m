@@ -52,20 +52,30 @@ dir=cell2mat(dir);
 dir=round(dir,-1);
 idx=find(dir==360);
 dir(idx)=0;
+idx=find(dir==350);
+dir(idx)=-10;
+
+dir30=dir;
+dirID30=0:30:330;
+dirCt30=zeros(12,1); %count of each direction
+for i=1:length(dirID30)
+    idx=find(dir==dirID30(i)|dir==dirID30(i)-10|dir==dirID30(i)+10);
+    dir30(idx)=dirID30(i);
+    dirCt30(i)=length(idx);
+end
+dirPb30=dirCt30/length(dir); %probability of each direction
 
 hfig=figure;
-histogram(dir,36,'Normalization','pdf')
+bar(dirID30,dirPb30)
 xlabel('Wind direction (deg)','FontSize',8,'FontName','Times New Roman')
 ylabel('PDF','FontSize',8,'FontName','Times New Roman')
-xlim([0 350])
-xticks(0:50:350)
 set(gca,'FontSize',8,'FontName','Times New Roman')
 % save figure
 figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\Figures\',State,'dir.');
+fileout=strcat('.\FiguresDeg30\',State,'dir.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 %% seperate wind speeds with different directions
 spdDir=cell(36,1);
@@ -76,9 +86,8 @@ for i=1:length(dirID)
 end
 
 spdDir30=cell(12,1);
-dirID30=0:30:330;
 for i=1:length(dirID30)
-    idx=find(dir==dirID30(i)|dir==dirID30(i)-10|dir==dirID30(i)+10|dir==dirID30(i)-10+360);
+    idx=find(dir==dirID30(i)|dir==dirID30(i)-10|dir==dirID30(i)+10);
     spdDir30{i}=[spd(idx),dir(idx)];
 end
 %% fit distribution for wind speeds in each 10 deg
