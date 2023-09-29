@@ -4,8 +4,9 @@ clear;clc;close all;
 
 % Connecticut
 windDataCT = readtable('./Data/dataCT/station_matrix_725040.xlsx');
+%%
 windAnalysis(windDataCT,'CT')
-
+%%
 % Sourthen California
 windDataCA = readtable('./Data/final_qc_data/station_matrix_722950.xlsx');
 windAnalysis(windDataCA,'CA')
@@ -61,12 +62,20 @@ print(hfig,[fileout,'tif'],'-r800','-dtiff');
 end
 
 %% lognormal: do not consider wind speeds below the threshold
-function pdfFit(spd,dir,State)
+function [spdBinMid,spd2prob]=pdfFit(spd,dir,State)
 spd2=spd-min(spd)+1;
 % method of moments
 lnSpd=log(spd2);
 lnTheta=mean(lnSpd);
 beta=std(lnSpd);
+
+binSize=max(spd2)/10;
+spd2bin=0:binSize:max(spd2);
+spd2cdf=logncdf(spd2bin,lnTheta,beta);
+spd2prob=diff(spd2cdf);
+spd2binMid=spd2bin(1:end-1)+binSize/2;
+spdBinMid=spd2binMid+min(spd)-1;
+
 % plot
 IM=0:0.5:60;
 Pf=lognpdf(IM,lnTheta,beta);
@@ -82,6 +91,22 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\FiguresDeg30\',State,num2str(dir),'.');
+fileout=strcat('.\FiguresDeg30\',State,'pdf',num2str(dir),'.');
+print(hfig,[fileout,'tif'],'-r800','-dtiff');
+
+% plot probability
+hfig=figure;
+h=histogram(spd,10,'Normalization','probability');
+hold on
+bar(spdBinMid,spd2prob)
+xlabel('Wind speed (mph)','FontSize',8,'FontName','Times New Roman')
+ylabel('Probability','FontSize',8,'FontName','Times New Roman')
+set(gca,'FontSize',8,'FontName','Times New Roman')
+% save figure
+figWidth=3.5;
+figHeight=3;
+set(hfig,'PaperUnits','inches');
+set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
+fileout=strcat('.\FiguresDeg30\',State,'prob',num2str(dir),'.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 end
