@@ -4,8 +4,24 @@ clear;clc;close all;
 
 % Connecticut
 windDataCT = readtable('./Data/dataCT/station_matrix_725040.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataCT,'CT');
 %%
-windAnalysis(windDataCT,'CT')
+totalDuraCT=13836*24; %hours, 2010.12.8(5pm)-1973.1.20(5pm);
+perDuraCT=height(windDataCT)/totalDuraCT;
+sigDuraCT=perDuraCT*25*365*24*3600; %seconds, significant duration in 25 years
+dirDuraCT=sigDuraCT*dirPb30(:,2);
+
+for i=1:length(spdPb30)
+    spdPb30{i}(:,3)=dirDuraCT(i)*spdPb30{i}(:,2);
+end
+
+fileID=fopen('./FiguresDeg30/CTspdPb30.txt','w');
+for i = 1:length(spdPb30)
+    for j=1:length(spdPb30{i})
+        fprintf(fileID,'%7.4f %4.0f\n',spdPb30{i}(j,1),spdPb30{i}(j,3));
+    end
+end
+fclose(fileID);
 %%
 % Sourthen California
 windDataCA = readtable('./Data/final_qc_data/station_matrix_722950.xlsx');
@@ -15,7 +31,7 @@ windAnalysis(windDataCA,'CA')
 windDataFL = readtable('./Data/final_qc_data/station_matrix_722020.xlsx');
 windAnalysis(windDataFL,'FL')
 
-function windAnalysis(windData,State)
+function [dirPb30,spdPb30]=windAnalysis(windData,State)
 %% wind speed
 spdRaw=windData.Var3;
 spd=spdRaw(8:end);
@@ -34,21 +50,22 @@ idx=find(dir==350);
 dir(idx)=-10;
 
 %% calculate probabilities of different wind directions and speeds
-dirID30=0:30:330;
+dirID30=(0:30:330)';
 dirCt30=zeros(12,1); %count of each direction
 spdDir30=cell(12,1);
+spdPb30=cell(12,1);
 for i=1:length(dirID30)
     idx=find(dir==dirID30(i)|dir==dirID30(i)-10|dir==dirID30(i)+10);
     dirCt30(i)=length(idx);
     
     %wind speeds for each direction
     spdDir30{i}=[spd(idx),dir(idx)];
-    pdfFit(spdDir30{i}(:,1),dirID30(i),State)
+    [spdPb30{i}(:,1),spdPb30{i}(:,2)]=pdfFit(spdDir30{i}(:,1),dirID30(i),State);
 end
-dirPb30=dirCt30/length(dir); %probability of each direction
+dirPb30=[dirID30,dirCt30/length(dir)]; %probability of each direction
 
 hfig=figure;
-bar(dirID30,dirPb30)
+bar(dirPb30(:,1),dirPb30(:,2))
 xlabel('Wind direction (deg)','FontSize',8,'FontName','Times New Roman')
 ylabel('Probability','FontSize',8,'FontName','Times New Roman')
 set(gca,'FontSize',8,'FontName','Times New Roman')
@@ -70,7 +87,7 @@ lnTheta=mean(lnSpd);
 beta=std(lnSpd);
 
 binSize=max(spd2)/10;
-spd2bin=0:binSize:max(spd2);
+spd2bin=(0:binSize:max(spd2))';
 spd2cdf=logncdf(spd2bin,lnTheta,beta);
 spd2prob=diff(spd2cdf);
 spd2binMid=spd2bin(1:end-1)+binSize/2;
