@@ -86,8 +86,10 @@ lnSpd=log(spd2);
 lnTheta=mean(lnSpd);
 beta=std(lnSpd);
 
-binSize=max(spd2)/10;
-spd2bin=(0:binSize:max(spd2))';
+maxSpd=91; %mph, use 50-y MRI wind speed as the maximum considered
+maxSpd2=maxSpd-min(spd)+1;
+binSize=maxSpd2/12;
+spd2bin=(0:binSize:maxSpd2)';
 spd2cdf=logncdf(spd2bin,lnTheta,beta);
 spd2prob=diff(spd2cdf);
 spd2binMid=spd2bin(1:end-1)+binSize/2;
