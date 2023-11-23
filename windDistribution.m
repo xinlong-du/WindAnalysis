@@ -2,6 +2,12 @@
 %with scarce data and locations with hurricanes.
 clear;clc;close all;
 
+%% Kansas
+windDataKS = readtable('./Data/final_qc_data/station_matrix_724585.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataKS,'KS');
+
+%%
+
 % Connecticut
 windDataCT = readtable('./Data/dataCT/station_matrix_725040.xlsx');
 [dirPb30,spdPb30]=windAnalysis(windDataCT,'CT');

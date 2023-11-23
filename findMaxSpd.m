@@ -11,8 +11,19 @@ for i=1:length(listing)
     maxSpdDir(i,3)=listing(i).bytes;
 end
 
-save("maxSpdDir.mat","maxSpdDir")
+%%
+save("maxSpdDir1.mat","maxSpdDir")
 
+%%
+maxSpdDir=[maxSpdDir,(1:length(listing))'];
+sortSpd=sortrows(maxSpdDir,1,'descend');
+sortBytes=sortrows(maxSpdDir,3,'descend');
+
+%% found i=599 for 3rd wind speed and 10th file size
+i=599;
+station=listing(i).name;
+
+%%
 function [maxSpd,mDir]=windAnalysis(windData)
 %% wind speed
 spdRaw=windData.Var3;
