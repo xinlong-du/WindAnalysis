@@ -4,23 +4,27 @@ close all; clear; clc;
 listing=dir('./Data/final_qc_data');
 listing=listing(3:end-1);
 maxSpdDir=zeros(length(listing),3);
-for i=1:length(listing)
+for i=950:length(listing)
     station=listing(i).name;
     windData=readtable(strcat('./Data/final_qc_data/',station));
     [maxSpdDir(i,1),maxSpdDir(i,2)]=windAnalysis(windData);
     maxSpdDir(i,3)=listing(i).bytes;
 end
 
+save("maxSpdDir2.mat","maxSpdDir")
+
 %%
-save("maxSpdDir1.mat","maxSpdDir")
+maxSpdDir1=load('maxSpdDir1.mat');
+maxSpdDir2=load('maxSpdDir2.mat');
+maxSpdDir=[maxSpdDir1.maxSpdDir(1:959,:);maxSpdDir2.maxSpdDir(960:end,:)];
 
 %%
 maxSpdDir=[maxSpdDir,(1:length(listing))'];
 sortSpd=sortrows(maxSpdDir,1,'descend');
 sortBytes=sortrows(maxSpdDir,3,'descend');
 
-%% found i=599 for 3rd wind speed and 10th file size
-i=599;
+%% found i=979 for 2nd wind speed and 8th file size
+i=979;
 station=listing(i).name;
 
 %%
