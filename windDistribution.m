@@ -2,13 +2,17 @@
 %with scarce data and locations with hurricanes.
 clear;clc;close all;
 
-%% Kansas
+%% South Dakota
 windDataSD = readtable('./Data/final_qc_data/station_matrix_726625.xlsx');
 [dirPb30,spdPb30]=windAnalysis(windDataSD,'SD');
 
 %% Kansas
 windDataKS = readtable('./Data/final_qc_data/station_matrix_724585.xlsx');
 [dirPb30,spdPb30]=windAnalysis(windDataKS,'KS');
+
+%% Kansas2
+windDataKS2 = readtable('./Data/final_qc_data/station_matrix_724500.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataKS2,'KS2');
 
 %%
 
@@ -47,6 +51,22 @@ spdRaw=windData.Var3;
 spd=spdRaw(8:end);
 spd=cellfun(@str2num,spd,'UniformOutput',false);
 spd=cell2mat(spd);
+
+hfig=figure;
+h=histogram(spd,30);
+xlabel('Wind speed (mph)','FontSize',8,'FontName','Times New Roman')
+ylabel('Hours','FontSize',8,'FontName','Times New Roman')
+set(gca,'FontSize',8,'FontName','Times New Roman')
+set(gca,'YScale','log')
+ylim([0.1 inf])
+
+% save figure
+figWidth=3.5;
+figHeight=3;
+set(hfig,'PaperUnits','inches');
+set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
+fileout=strcat('.\FiguresDeg30\',State,'aSpd.');
+print(hfig,[fileout,'tif'],'-r800','-dtiff');
 
 %% wind directions
 dirRaw=windData.Var4;
