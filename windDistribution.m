@@ -2,6 +2,14 @@
 %with scarce data and locations with hurricanes.
 clear;clc;close all;
 
+%% South California 2
+windDataSD = readtable('./Data/final_qc_data/station_matrix_722650.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataSD,'TX');
+
+%% South California 2
+windDataSD = readtable('./Data/final_qc_data/station_matrix_723830.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataSD,'CA2');
+
 %% South Dakota
 windDataSD = readtable('./Data/final_qc_data/station_matrix_726625.xlsx');
 [dirPb30,spdPb30]=windAnalysis(windDataSD,'SD');
@@ -58,7 +66,7 @@ xlabel('Wind speed (mph)','FontSize',8,'FontName','Times New Roman')
 ylabel('Hours','FontSize',8,'FontName','Times New Roman')
 set(gca,'FontSize',8,'FontName','Times New Roman')
 set(gca,'YScale','log')
-ylim([0.1 inf])
+ylim([0.1 10000])
 
 % save figure
 figWidth=3.5;
