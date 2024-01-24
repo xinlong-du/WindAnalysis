@@ -37,7 +37,7 @@ for i=1:length(spdPb30)
     spdPb30{i}(:,3)=dirDuraCT(i)*spdPb30{i}(:,2);
 end
 
-fileID=fopen('./FiguresDeg30/CTspdPb30.txt','w');
+fileID=fopen('./FiguresDeg30TX/CTspdPb30.txt','w');
 for i = 1:length(spdPb30)
     for j=1:length(spdPb30{i})
         fprintf(fileID,'%7.4f %4.0f\n',spdPb30{i}(j,1),spdPb30{i}(j,3));
@@ -73,7 +73,7 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\FiguresDeg30\',State,'aSpd.');
+fileout=strcat('.\FiguresDeg30TX\',State,'aSpd.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 
 %% wind directions
@@ -112,7 +112,7 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\FiguresDeg30\',State,'dir.');
+fileout=strcat('.\FiguresDeg30TX\',State,'dir.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 end
 
@@ -124,9 +124,8 @@ lnSpd=log(spd2);
 lnTheta=mean(lnSpd);
 beta=std(lnSpd);
 
-maxSpd=91; %mph, use 50-y MRI wind speed as the maximum considered
-maxSpd2=maxSpd-min(spd)+1;
-binSize=maxSpd2/12;
+maxSpd2=logninv(0.99,lnTheta,beta);
+binSize=maxSpd2/10;
 spd2bin=(0:binSize:maxSpd2)';
 spd2cdf=logncdf(spd2bin,lnTheta,beta);
 spd2prob=diff(spd2cdf);
@@ -148,7 +147,7 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\FiguresDeg30\',State,'pdf',num2str(dir),'.');
+fileout=strcat('.\FiguresDeg30TX\',State,'pdf',num2str(dir),'.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 
 % plot probability
@@ -164,6 +163,6 @@ figWidth=3.5;
 figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
-fileout=strcat('.\FiguresDeg30\',State,'prob',num2str(dir),'.');
+fileout=strcat('.\FiguresDeg30TX\',State,'prob',num2str(dir),'.');
 print(hfig,[fileout,'tif'],'-r800','-dtiff');
 end
