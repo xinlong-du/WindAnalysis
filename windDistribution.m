@@ -1,32 +1,9 @@
-%the current method may be OK. But may need more research on directions
-%with scarce data and locations with hurricanes.
 clear;clc;close all;
 
-%% South California 2
-windDataSD = readtable('./Data/final_qc_data/station_matrix_722650.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataSD,'TX');
+%% Texas
+windDataCT = readtable('./Data/final_qc_data/station_matrix_722650.xlsx');
+[dirPb30,spdPb30]=windAnalysis(windDataCT,'TX');
 
-%% South California 2
-windDataSD = readtable('./Data/final_qc_data/station_matrix_723830.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataSD,'CA2');
-
-%% South Dakota
-windDataSD = readtable('./Data/final_qc_data/station_matrix_726625.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataSD,'SD');
-
-%% Kansas
-windDataKS = readtable('./Data/final_qc_data/station_matrix_724585.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataKS,'KS');
-
-%% Kansas2
-windDataKS2 = readtable('./Data/final_qc_data/station_matrix_724500.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataKS2,'KS2');
-
-%%
-
-% Connecticut
-windDataCT = readtable('./Data/dataCT/station_matrix_725040.xlsx');
-[dirPb30,spdPb30]=windAnalysis(windDataCT,'CT');
 %%
 totalDuraCT=13836*24; %hours, 2010.12.8(5pm)-1973.1.20(5pm);
 perDuraCT=height(windDataCT)/totalDuraCT;
@@ -44,14 +21,6 @@ for i = 1:length(spdPb30)
     end
 end
 fclose(fileID);
-%%
-% Sourthen California
-windDataCA = readtable('./Data/final_qc_data/station_matrix_722950.xlsx');
-windAnalysis(windDataCA,'CA')
-
-% Florida
-windDataFL = readtable('./Data/final_qc_data/station_matrix_722020.xlsx');
-windAnalysis(windDataFL,'FL')
 
 function [dirPb30,spdPb30]=windAnalysis(windData,State)
 %% wind speed
@@ -124,7 +93,7 @@ lnSpd=log(spd2);
 lnTheta=mean(lnSpd);
 beta=std(lnSpd);
 
-maxSpd2=logninv(0.99,lnTheta,beta);
+maxSpd2=logninv(0.999,lnTheta,beta);
 binSize=maxSpd2/10;
 spd2bin=(0:binSize:maxSpd2)';
 spd2cdf=logncdf(spd2bin,lnTheta,beta);
