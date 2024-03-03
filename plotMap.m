@@ -35,4 +35,4 @@ figHeight=4.65;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
 figname=('.\Figures\0stations.');
-print(hfig,[figname,'tif'],'-r500','-dtiff');
+print(hfig,[figname,'tif'],'-r300','-dtiff');

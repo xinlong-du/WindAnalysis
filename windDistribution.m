@@ -4,6 +4,28 @@ clear;clc;close all;
 windDataCT = readtable('./Data/final_qc_data/station_matrix_722650.xlsx');
 [dirPb30,spdPb30]=windAnalysis(windDataCT,'TX');
 
+spdRaw=windDataCT.Var3;
+spd=spdRaw(8:end);
+spd=cellfun(@str2num,spd,'UniformOutput',false);
+spd=cell2mat(spd);
+
+timeRaw=windDataCT.StationDescription_MIDLANDREGIONALAIRTERMINAL;
+timeDate=timeRaw(8:end);
+time=datetime(timeDate,'InputFormat','M/d/yyyy h:mm:ss a');
+
+hfig=figure;
+plot(time,spd,'k.','MarkerSize',5)
+xlabel('Date','FontSize',8,'FontName','Times New Roman')
+ylabel('Wind speed (mph)','FontSize',8,'FontName','Times New Roman')
+set(gca,'FontSize',8,'FontName','Times New Roman')
+% save figure
+figWidth=4;
+figHeight=2.8;
+set(hfig,'PaperUnits','inches');
+set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
+figname=('.\FiguresDeg30TX\0windSpeeds.');
+print(hfig,[figname,'tif'],'-r300','-dtiff');
+
 %%
 totalDuraCT=13836*24; %hours, 2010.12.8(5pm)-1973.1.20(5pm);
 perDuraCT=height(windDataCT)/totalDuraCT;
@@ -43,7 +65,7 @@ figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
 fileout=strcat('.\FiguresDeg30TX\',State,'aSpd.');
-print(hfig,[fileout,'tif'],'-r800','-dtiff');
+print(hfig,[fileout,'tif'],'-r300','-dtiff');
 
 %% wind directions
 dirRaw=windData.Var4;
@@ -82,7 +104,7 @@ figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
 fileout=strcat('.\FiguresDeg30TX\',State,'dir.');
-print(hfig,[fileout,'tif'],'-r800','-dtiff');
+print(hfig,[fileout,'tif'],'-r300','-dtiff');
 end
 
 %% lognormal: do not consider wind speeds below the threshold
@@ -117,7 +139,7 @@ figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
 fileout=strcat('.\FiguresDeg30TX\',State,'pdf',num2str(dir),'.');
-print(hfig,[fileout,'tif'],'-r800','-dtiff');
+print(hfig,[fileout,'tif'],'-r300','-dtiff');
 
 % plot probability
 hfig=figure;
@@ -133,5 +155,5 @@ figHeight=3;
 set(hfig,'PaperUnits','inches');
 set(hfig,'PaperPosition',[0 0 figWidth figHeight]);
 fileout=strcat('.\FiguresDeg30TX\',State,'prob',num2str(dir),'.');
-print(hfig,[fileout,'tif'],'-r800','-dtiff');
+print(hfig,[fileout,'tif'],'-r300','-dtiff');
 end
